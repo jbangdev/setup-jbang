@@ -22,18 +22,9 @@ runs:
   steps:
     - name: 'Download JBang'
       shell: bash
-      if: runner.os != 'Windows'
       run: |
         echo "::group::⬇️ Download JBang"
         curl -Ls https://sh.jbang.dev | bash -s - app setup
         echo "${HOME}/.jbang/bin" >> $GITHUB_PATH
-        ${HOME}/.jbang/bin/jbang version
-        echo "::endgroup::"
-    - name: 'Download JBang for Windows'
-      if: runner.os == 'Windows'
-      run: |
-        echo "::group::⬇️ Download JBang"
-        iex "& { $(iwr https://ps.jbang.dev) } app setup"
-        echo "${HOME}/.jbang/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
         ${HOME}/.jbang/bin/jbang version
         echo "::endgroup::"
