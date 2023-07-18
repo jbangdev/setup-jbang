@@ -38,9 +38,7 @@ jobs:
         
 ----
 
-IMPORTANT: This action requires Java 11+ to download and execute JReleaser. The action will setup a suitable Java runtime
-automatically. If you would like to use a different Java version/distribution then set the value of `setup-java` to `false`
-and make sure you have a previous step with `actions/setup-java` setup as needed.
+IMPORTANT: This action requires Java 8+ to download and execute JBang. The action will setup a suitable Java runtime automatically if one is not available. GitHub runners seem to have a default Java 11 available. If you would like to use a different Java version/distribution then add a `actions/setup-java` as needed.
 
 == Customizing
 

@@ -29,13 +29,26 @@ runs:
         echo "${HOME}/.jbang/bin" >> $GITHUB_PATH
         ${HOME}/.jbang/bin/jbang version
         echo "::endgroup::"
+    - name: 'Setup JBang'
+      shell: bash
+      if: runner.os != 'Windows'
+      run: |
+        echo "::group::🔧 Setup JBang"
+        echo "${HOME}/.jbang/bin" >> $GITHUB_PATH
+        ${HOME}/.jbang/bin/jbang version
+        echo "::endgroup::"
     - name: 'Download JBang (Windows)'
       shell: pwsh
       if: runner.os == 'Windows'
       run: |
         echo "::group::⬇️ Download JBang"
         iex "& { $(iwr https://ps.jbang.dev) } app setup"
+        echo "::endgroup::"
+    - name: 'Setup JBang (Windows)'
+      shell: pwsh
+      if: runner.os == 'Windows'
+      run: |
+        echo "::group::🔧 Setup JBang"
         echo "$HOME\.jbang\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
         & $HOME\.jbang\bin\jbang.ps1 version
-        echo $GITHUB_PATH
         echo "::endgroup::"
