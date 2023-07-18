@@ -53,7 +53,5 @@ Following inputs can be used as `step.with` keys
 | Name              | Type    | Default                 | Description
 | version           | String  |                         | The JBang version to use. +
 Should match any of the link:https://github.com/jbangdev/jbang/releases[published releases]. Leave empty to use the latest.
-| setup-java        | boolean | true                    | Automatically setup a Java runtime. +
-Java runtime defaults to Temurin 17.
 |===
 

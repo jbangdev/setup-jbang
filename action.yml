@@ -20,19 +20,20 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: 'Setup Java'
-      uses: actions/setup-java@5ffc13f4174014e2d4d4572b3d74c3fa61aeb2c2 # v 3.11.0
-      if: ${{ inputs.setup-java == 'true' }}
-      with:
-        java-version: 17
-        distribution: 'temurin'
-
     - name: 'Download JBang'
       shell: bash
-      #working-directory: ${{ inputs.working-directory }}
+      if: runner.os != 'Windows'
       run: |
         echo "::group::⬇️ Download JBang"
         curl -Ls https://sh.jbang.dev | bash -s - app setup
         echo "${HOME}/.jbang/bin" >> $GITHUB_PATH
         ${HOME}/.jbang/bin/jbang version
         echo "::endgroup::"
+      - name: 'Download JBang (Windows)'
+        if: runner.os == 'Windows'
+        run: |
+          echo "::group::⬇️ Download JBang"
+          iex "& { $(iwr https://ps.jbang.dev) } app setup"
+          echo "${HOME}/.jbang/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          ${HOME}/.jbang/bin/jbang version
+          echo "::endgroup::"
