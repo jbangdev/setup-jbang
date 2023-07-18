@@ -35,10 +35,49 @@ jobs:
 
       - name: Setup JBang
         uses: jbangdev/setup-jbang@main
+       
+      - name: properties
+        run: |
+          jbang properties@jbangdev
         
 ----
 
-IMPORTANT: This action requires Java 8+ to download and execute JBang. The action will setup a suitable Java runtime automatically if one is not available. GitHub runners seem to have a default Java 11 available. If you would like to use a different Java version/distribution then add a `actions/setup-java` as needed.
+IMPORTANT: This action requires Java 8+ to download and execute JBang. The action will setup a suitable Java runtime automatically if one is not available. GitHub runners seem to have a default Java 11 available. If you would like to use a different Java version/distribution then add a `actions/setup-java` as needed. Example:
+
+[source,yaml]
+----
+name: jbang
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      # Configure build steps as you'd normally do
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '20'
+          
+      - name: Setup JBang
+        uses: jbangdev/setup-jbang@main
+       
+      - name: complexhelloworld
+        run: |
+          jbang properties@jbangdev java.version
+        
+----
+
 
 == Customizing
 
