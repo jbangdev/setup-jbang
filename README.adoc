@@ -1,0 +1,59 @@
+= setup-jbang
+:linkattrs:
+:project-owner: jbangdev
+:project-name:  setup-jbang
+
+image:https://github.com/{project-owner}/{project-name}/workflows/Test/badge.svg["Build Status", link="https://github.com/{project-owner}/{project-name}/actions"]
+image:https://img.shields.io/github/v/release/{project-owner}/{project-name}["GitHub release", link="https://github.com/jreleaser/release-action/releases"]
+image:https://img.shields.io/twitter/follow/{project-owner}?style=social["Twitter Follow", link="https://twitter.com/jreleaser"]
+
+This action setup link:https://jbang.dev[JBang] cli.
+
+== Usage
+
+=== Workflow
+
+[source,yaml]
+----
+name: jbang
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      # Configure build steps as you'd normally do
+
+      - name: Setup JBang
+        uses: jbangdev/setup-jbang@main
+        
+----
+
+IMPORTANT: This action requires Java 11+ to download and execute JReleaser. The action will setup a suitable Java runtime
+automatically. If you would like to use a different Java version/distribution then set the value of `setup-java` to `false`
+and make sure you have a previous step with `actions/setup-java` setup as needed.
+
+== Customizing
+
+== Inputs
+
+Following inputs can be used as `step.with` keys
+
+[%header,cols="<2,<,<2,<3",width="100%"]
+|===
+| Name              | Type    | Default                 | Description
+| version           | String  |                         | The JBang version to use. +
+Should match any of the link:https://github.com/jbangdev/jbang/releases[published releases]. Leave empty to use the latest.
+| setup-java        | boolean | true                    | Automatically setup a Java runtime. +
+Java runtime defaults to Temurin 17.
+|===
+
