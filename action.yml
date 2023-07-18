@@ -3,8 +3,8 @@ name: Setup JBang
 description: 'Set up a specific version of JBang and add it to the PATH'
 
 branding:
-  icon: 'archive'
-  color: 'gray-dark'
+  icon: 'terminal'
+  color: 'blue'
 
 inputs:
   version:
