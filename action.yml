@@ -34,4 +34,5 @@ runs:
         echo "::group::⬇️ Download JBang"
         curl -Ls https://sh.jbang.dev | bash -s - app setup
         echo "${HOME}/.jbang/bin" >> $GITHUB_PATH
+        ${HOME}/.jbang/bin/jbang version
         echo "::endgroup::"
