@@ -42,7 +42,7 @@ jobs:
         
 ----
 
-IMPORTANT: This action requires Java 8+ to download and execute JBang. The action will setup a suitable Java runtime automatically if one is not available. GitHub runners seem to have a default Java 11 available. If you would like to use a different Java version/distribution then add a `actions/setup-java` as needed. Example:
+IMPORTANT: This action will download a suitable Java runtime automatically if one is not available. Thus this action does not need a pre-configured Java setup. The action and JBang will though prefer to use a JDK if it is available. GitHub runners have a default Java 11 available thus it will use that Java by default. If you would like to use a different Java version/distribution, then add a `actions/setup-java` as needed. Example:
 
 [source,yaml]
 ----
