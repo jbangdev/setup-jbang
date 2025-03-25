@@ -23,8 +23,13 @@ runs:
     - name: 'Download JBang'
       shell: bash
       if: runner.os != 'Windows'
+      env:
+        VERSION_INPUT: ${{ inputs.version }}
       run: |
         echo "::group::⬇️ Download JBang"
+        if [[ "$VERSION_INPUT" != "latest" ]]; then
+          export JBANG_DOWNLOAD_VERSION=$VERSION_INPUT
+        fi
         curl -Ls https://sh.jbang.dev | bash -s - app setup
         echo "${HOME}/.jbang/bin" >> $GITHUB_PATH
         ${HOME}/.jbang/bin/jbang version
@@ -40,8 +45,13 @@ runs:
     - name: 'Download JBang (Windows)'
       shell: pwsh
       if: runner.os == 'Windows'
+      env:
+        VERSION_INPUT: ${{ inputs.version }}
       run: |
         echo "::group::⬇️ Download JBang"
+        if ($env:VERSION_INPUT -ne "latest") {
+          $env:JBANG_DOWNLOAD_VERSION = $env:VERSION_INPUT
+        }
         iex "& { $(iwr https://ps.jbang.dev) } app setup"
         echo "::endgroup::"
     - name: 'Setup JBang (Windows)'
