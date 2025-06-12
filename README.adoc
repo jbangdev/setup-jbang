@@ -67,14 +67,29 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
-          java-version: '20'
+          java-version: | 
+            11
+            17
           
       - name: Setup JBang
         uses: jbangdev/setup-jbang@main
-       
-      - name: complexhelloworld
+
+      - name: Configure java
         run: |
-          jbang properties@jbangdev java.version
+          jbang jdk install 11 ${{env.JAVA_HOME_11_X64}}
+          jbang jdk install 17 ${{env.JAVA_HOME_17_X64}}
+
+       - name: complexhelloworld
+        run: |
+          jbang properties@jbangdev java.vendor.version # uses the default java version
+
+      - name: test output 11
+        run:  jbang --java 11 properties@jbangdev java.vendor.version # use java 11
+      - name: test output 17
+        run:  jbang --java 17 properties@jbangdev java.vendor.version # use java 17
+       
+     
+      
         
 ----
 
