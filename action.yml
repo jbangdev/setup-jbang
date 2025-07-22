@@ -20,9 +20,27 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    - name: 'Determine version'
+      id: jbangversion
+      shell: bash
+      run: |
+        if [ "${{ inputs.version }}" = "latest" ]; then
+          version=$(wget -qO- https://www.jbang.dev/releases/latest/download/version.txt)
+        else
+          version="${{ inputs.version }}"
+        fi
+        echo "VERSION=$version" >> "$GITHUB_OUTPUT"
+    - name: Cache JBang
+      id: cachejbang
+      uses: actions/cache@v4
+      with:
+        path: ~/.jbang
+        key: jbang-${{ steps.jbangversion.outputs.VERSION }}
+        restore-keys: |
+          jbang-
     - name: 'Download JBang'
       shell: bash
-      if: runner.os != 'Windows'
+      if: (runner.os != 'Windows') && (steps.cachejbang.outputs.cache-hit != 'true')
       env:
         VERSION_INPUT: ${{ inputs.version }}
       run: |
@@ -44,7 +62,7 @@ runs:
         echo "::endgroup::"
     - name: 'Download JBang (Windows)'
       shell: pwsh
-      if: runner.os == 'Windows'
+      if: (runner.os == 'Windows') && (steps.cachejbang.outputs.cache-hit != 'true')
       env:
         VERSION_INPUT: ${{ inputs.version }}
       run: |
