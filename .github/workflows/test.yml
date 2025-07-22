@@ -6,7 +6,7 @@ on:
 
 jobs:
   test:
-    name: 'JBang Latest, Java ${{ matrix.java }}, ${{ matrix.os }}'
+    name: 'JBang latest, Java ${{ matrix.java }}, ${{ matrix.os }}'
     strategy:
       fail-fast: false
       matrix:
