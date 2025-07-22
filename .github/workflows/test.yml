@@ -23,7 +23,7 @@ jobs:
 
       - uses: ./
         with:
-          arguments: version
+          version: latest
 
       - shell: bash
         run: |
