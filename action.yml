@@ -25,7 +25,7 @@ runs:
       shell: bash
       run: |
         if [ "${{ inputs.version }}" = "latest" ]; then
-          version=$(wget -qO- https://www.jbang.dev/releases/latest/download/version.txt)
+          version=$(curl -fsSL https://www.jbang.dev/releases/latest/download/version.txt)
         else
           version="${{ inputs.version }}"
         fi
