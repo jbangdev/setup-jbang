@@ -20,24 +20,18 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: 'Determine version'
-      id: jbangversion
+    - name: Generate JBang cache key
+      id: cache-key
       shell: bash
       run: |
-        if [ "${{ inputs.version }}" = "latest" ]; then
-          version=$(curl -fsSL https://www.jbang.dev/releases/latest/download/version.txt)
-        else
-          version="${{ inputs.version }}"
-        fi
-        echo "VERSION=$version" >> "$GITHUB_OUTPUT"
+        # idea: monthly cache refresh
+        echo "cache_key=jbang-$(date +%Y-%m)" >> $GITHUB_OUTPUT
     - name: Cache JBang
       id: cachejbang
       uses: actions/cache@v4
       with:
         path: ~/.jbang
-        key: jbang-${{ steps.jbangversion.outputs.VERSION }}
-        restore-keys: |
-          jbang-
+        key: ${{ steps.cache-key.outputs.cache_key }}
     - name: 'Download JBang'
       shell: bash
       if: (runner.os != 'Windows') && (steps.cachejbang.outputs.cache-hit != 'true')
