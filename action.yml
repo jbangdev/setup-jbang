@@ -39,7 +39,9 @@ runs:
       uses: actions/cache@v4
       with:
         path: ~/.jbang
-        key: ${{ runner.os }}-${{ steps.get-yearmonth.outputs.yearmonth }}
+        # The version is part of the key: otherwise a job asking for a pinned version could hit a
+        # cache filled by a "latest" job (or vice versa) and silently keep the cached version.
+        key: ${{ runner.os }}-${{ inputs.version }}-${{ steps.get-yearmonth.outputs.yearmonth }}
     - name: 'Download JBang'
       shell: bash
       if: (runner.os != 'Windows') && ((inputs.cache != 'true') || (steps.cache-jbang.outputs.cache-hit != 'true'))
@@ -51,8 +53,6 @@ runs:
           export JBANG_DOWNLOAD_VERSION=$VERSION_INPUT
         fi
         curl -Ls https://sh.jbang.dev | bash -s - app setup
-        echo "${HOME}/.jbang/bin" >> $GITHUB_PATH
-        ${HOME}/.jbang/bin/jbang version
         echo "::endgroup::"
     - name: 'Setup JBang'
       shell: bash
