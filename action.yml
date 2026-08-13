@@ -17,12 +17,34 @@ inputs:
     description: 'Setup internal Java runtime.'
     required: false
 
+  cache:
+    default: 'true'
+    description: 'Cache JBang files'
+    type: boolean
+    required: false
+
 runs:
   using: 'composite'
   steps:
+    - name: Generate JBang cache key
+      id: get-yearmonth
+      shell: bash
+      if: ${{ inputs.cache == 'true' }}
+      run: |
+        # idea: monthly cache refresh
+        echo "yearmonth=jbang-$(date +%Y-%m)" >> $GITHUB_OUTPUT
+    - name: Cache JBang
+      id: cache-jbang
+      if: ${{ inputs.cache == 'true' }}
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ~/.jbang
+        # The version is part of the key: otherwise a job asking for a pinned version could hit a
+        # cache filled by a "latest" job (or vice versa) and silently keep the cached version.
+        key: ${{ runner.os }}-${{ inputs.version }}-${{ steps.get-yearmonth.outputs.yearmonth }}
     - name: 'Download JBang'
       shell: bash
-      if: runner.os != 'Windows'
+      if: (runner.os != 'Windows') && ((inputs.cache != 'true') || (steps.cache-jbang.outputs.cache-hit != 'true'))
       env:
         VERSION_INPUT: ${{ inputs.version }}
       run: |
@@ -31,8 +53,6 @@ runs:
           export JBANG_DOWNLOAD_VERSION=$VERSION_INPUT
         fi
         curl -Ls https://sh.jbang.dev | bash -s - app setup
-        echo "${HOME}/.jbang/bin" >> $GITHUB_PATH
-        ${HOME}/.jbang/bin/jbang version
         echo "::endgroup::"
     - name: 'Setup JBang'
       shell: bash
@@ -44,7 +64,7 @@ runs:
         echo "::endgroup::"
     - name: 'Download JBang (Windows)'
       shell: pwsh
-      if: runner.os == 'Windows'
+      if: (runner.os == 'Windows') && ((inputs.cache != 'true') || (steps.cache-jbang.outputs.cache-hit != 'true'))
       env:
         VERSION_INPUT: ${{ inputs.version }}
       run: |

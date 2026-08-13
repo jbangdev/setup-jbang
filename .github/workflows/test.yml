@@ -6,24 +6,56 @@ on:
 
 jobs:
   test:
-    name: 'JBang Latest, Java ${{ matrix.java }}, ${{ matrix.os }}'
+    name: 'JBang latest, Java ${{ matrix.java }}, ${{ matrix.os }}'
     strategy:
       fail-fast: false
       matrix:
         os: [ ubuntu-latest, macos-latest, windows-latest ]
-        java: [ 11, 17, 20 ]
+        java: [ 11, 17, 21, 25 ]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: actions/setup-java@b6e674f4b717d7b0ae3baee0fbe79f498905dfde # v1
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
         with:
           java-version: ${{ matrix.java }}
+          distribution: 'temurin'
 
-      - uses: ./
+      - name: Run action
+        uses: ./
         with:
-          arguments: version
+          version: latest
 
       - shell: bash
         run: |
           jbang version
+
+  test-pinned:
+    name: 'JBang ${{ matrix.jbang }}, ${{ matrix.os }}'
+    # A pinned version has to win over a cache entry written by the "latest" job above,
+    # which shares the runner OS and the monthly part of the cache key.
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        jbang: [ '0.141.0' ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
+        with:
+          java-version: 21
+          distribution: 'temurin'
+
+      - name: Run action
+        uses: ./
+        with:
+          version: ${{ matrix.jbang }}
+
+      - shell: bash
+        env:
+          EXPECTED_VERSION: ${{ matrix.jbang }}
+        run: |
+          jbang version
+          jbang version | grep -Fx "$EXPECTED_VERSION"
